@@ -1,6 +1,7 @@
 import { SceneController } from "./congif/core/sceneController"
 import { SceneLocations } from "./congif/enums"
 import { SceneEntities } from "./congif/scenes"
+import { hologram } from "./utils/hologram"
 
 class GameController {
   private scenes = SceneEntities
@@ -12,6 +13,6 @@ class GameController {
 }
 
 new GameController()
-
+new hologram()
 
 

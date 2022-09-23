@@ -4,7 +4,6 @@ export class TriggerPrompts extends Entity {
     public onClick: () => void = () => {}
     private distance: number = 5
     private message: string = "Interact"
-    private triggerBox = new utils.TriggerBoxShape()
 
     constructor(){
         super()
