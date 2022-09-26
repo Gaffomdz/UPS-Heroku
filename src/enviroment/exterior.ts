@@ -58,7 +58,7 @@ class ExteriorInstance extends Scene {
     constructor() {
         super(SceneLocations.Exterior)
         this.addComponent(new GLTFShape('models/UPS_Colliders.glb'))
-        this.mainGeo.addComponent(new GLTFShape('models/UPS_MainGeo_7.glb'))
+        this.mainGeo.addComponent(new GLTFShape('models/UPS_MainGeo_8.glb'))
         // this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
         this.elevatorPad.addComponent(new GLTFShape('models/UPS_ElevatorPad.glb')) // We are not using the elevetor yet
         this.frontDoor.addComponent(new GLTFShape('models/UPS_FrontDoor.glb'))
