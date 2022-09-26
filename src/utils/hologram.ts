@@ -3,14 +3,12 @@ import { Dash_Tweaker } from "dcldash"
 export class hologram extends Entity {
     constructor(){
         super()
-        this.addComponent(new GLTFShape('models/UPS_Hologram.glb'))
-        this.addComponent(new Transform({
-            position: new Vector3(0.000, 6.100, 6.500),
-            scale: new Vector3(1.000, 1.000, 1.000),
-            rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
-         }))
-        engine.addEntity(this)
-
+        // this.addComponent(new GLTFShape('models/UPS_Hologram.glb'))
+        // this.addComponent(new Transform({
+        //     position: new Vector3(0.000, 6.100, 6.500),
+        //     scale: new Vector3(1.000, 1.000, 1.000),
+        //     rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
+        //  }))
 
         // let materials = new Array
         // let counter = 0

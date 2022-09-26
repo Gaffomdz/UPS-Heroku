@@ -13,6 +13,6 @@ class GameController {
 }
 
 new GameController()
-new hologram()
+
 
 

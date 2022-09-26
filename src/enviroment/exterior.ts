@@ -16,8 +16,9 @@ import { dynamicArticle1 } from "src/articles/dynamicArticle1"
 import { dynamicArticle2 } from "src/articles/dynamicArticle2"
 import { dynamicArticle3 } from "src/articles/dynamicArticle3"
 import { dynamicArticle4 } from "src/articles/dynamicArticle4"
+import { createUiInstructionPrompt } from "src/uiPrompts/uiInstructionPrompt"
 
-
+let x = 0
 
 class ExteriorInstance extends Scene {
 
@@ -35,6 +36,7 @@ class ExteriorInstance extends Scene {
     private teleportBox = new teleportBox()
     private teleportBox2 = new teleportBox()
     private hologram = new Entity()
+    private instructionPrompt = new TriggerDoor()
 
     public articlenum = 0
     public pagenum = 0
@@ -56,8 +58,8 @@ class ExteriorInstance extends Scene {
     constructor() {
         super(SceneLocations.Exterior)
         this.addComponent(new GLTFShape('models/UPS_Colliders.glb'))
-        this.mainGeo.addComponent(new GLTFShape('models/UPS_MainGeo_5.glb'))
-        this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
+        this.mainGeo.addComponent(new GLTFShape('models/UPS_MainGeo_7.glb'))
+        // this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
         this.elevatorPad.addComponent(new GLTFShape('models/UPS_ElevatorPad.glb')) // We are not using the elevetor yet
         this.frontDoor.addComponent(new GLTFShape('models/UPS_FrontDoor.glb'))
         this.frontDoor.addComponent(new Animator)
@@ -65,7 +67,6 @@ class ExteriorInstance extends Scene {
         this.frontDoor.getComponent(Animator).addClip(new AnimationState('GlassDoor_Close', { layer: 1, weight: 0.01 }))
         this.newStandPosters.addComponent(new GLTFShape('models/UPS_Newstand_posters.glb'))
         this.newStandGeo.addComponent(new GLTFShape('models/UPS_Newstand_geo.glb'))
-        // this.hologram.addComponent(new GLTFShape('models/hologram_2.glb'))
 
         this.mainGeo.setParent(this)
         this.elevatorPad.setParent(this) // We are not using the elevetor yet
@@ -79,8 +80,8 @@ class ExteriorInstance extends Scene {
             position: new Vector3(4.170, 2.020, 27.980),
             scale: new Vector3(5.000, 5.000, 3.000),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
-         }))
-         this.teleportCollider.addComponent(Dash_Material.transparent())
+        }))
+        this.teleportCollider.addComponent(Dash_Material.transparent())
         engine.addEntity(this.teleportCollider)
 
 
@@ -88,7 +89,7 @@ class ExteriorInstance extends Scene {
         this.triggerPortal1()
         this.teleportBuild()
         // this.articleFeed()
-        this.clickPrompt1()
+        this.triggerPromptInstruction()
     }
     createTriggerPrompts() {
         [this.prompt1, this.prompt2, this.prompt3, this.prompt4
@@ -97,33 +98,33 @@ class ExteriorInstance extends Scene {
             triggerPrompts.setParent(this)
         })
 
-        this.prompt1.addComponentOrReplace(new  Transform({
+        this.prompt1.addComponentOrReplace(new Transform({
             position: new Vector3(24.070, 2.600, 22.550),
             scale: new Vector3(1.180, 2.100, 1.900),
             rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
-         }))
+        }))
         this.prompt1.onClick = () => this.articleFeed1()
 
-        this.prompt2.addComponentOrReplace(new  Transform({
+        this.prompt2.addComponentOrReplace(new Transform({
             position: new Vector3(24.070, 2.600, 21.260),
             scale: new Vector3(1.200, 2.120, 1.920),
             rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
-         }))
+        }))
         this.prompt2.onClick = () => this.articleFeed2()
 
         this.prompt3.addComponentOrReplace(new Transform({
             position: new Vector3(24.070, 2.600, 19.350),
             scale: new Vector3(1.180, 2.100, 1.900),
             rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
-         }))
-         this.prompt3.onClick = () => this.articleFeed3()
+        }))
+        this.prompt3.onClick = () => this.articleFeed3()
 
-         this.prompt4.addComponentOrReplace( new Transform({
+        this.prompt4.addComponentOrReplace(new Transform({
             position: new Vector3(24.070, 2.600, 18.050),
             scale: new Vector3(1.180, 2.100, 1.900),
             rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
-         }))
-         this.prompt4.onClick = () => this.articleFeed4()
+        }))
+        this.prompt4.onClick = () => this.articleFeed4()
 
     }
 
@@ -199,7 +200,7 @@ class ExteriorInstance extends Scene {
         this.createButtonsLeft()
     }
 
-    articleFeed2(){
+    articleFeed2() {
         engine.removeEntity(this.prompt1)
         engine.removeEntity(this.prompt2)
 
@@ -210,7 +211,7 @@ class ExteriorInstance extends Scene {
 
     }
 
-    createButtonsLeft(){
+    createButtonsLeft() {
         engine.addEntity(this.nextbuttonLeft)
         engine.addEntity(this.stopbuttonLeft)
         engine.addEntity(this.prevbuttonLeft)
@@ -220,28 +221,28 @@ class ExteriorInstance extends Scene {
             position: new Vector3(24.070, -2.030, 22.570),
             scale: new Vector3(3.000, 3.000, 3.000),
             rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-         }))
+        }))
 
-        this.nextbuttonLeft.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==1){
+        this.nextbuttonLeft.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 1) {
                 log('clicked!')
                 this.article1.nextPage()
             }
-            if(this.articlenum==2){
+            if (this.articlenum == 2) {
                 this.article2.nextPage()
             }
-        },{
+        }, {
             hoverText: 'Next Page'
         }))
 
-        this.stopbuttonLeft.addComponentOrReplace(new   Transform({
+        this.stopbuttonLeft.addComponentOrReplace(new Transform({
             position: new Vector3(24.000, -2.610, 23.130),
             scale: new Vector3(3.000, 3.000, 3.000),
             rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-         }))
+        }))
 
-         this.stopbuttonLeft.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==1){
+        this.stopbuttonLeft.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 1) {
                 this.article1.onExit(this.article1.currentEntity)
                 engine.addEntity(this.prompt1)
                 engine.addEntity(this.prompt2)
@@ -250,7 +251,7 @@ class ExteriorInstance extends Scene {
                 engine.removeEntity(this.stopbuttonLeft)
                 engine.removeEntity(this.prevbuttonLeft)
             }
-            if(this.articlenum==2){
+            if (this.articlenum == 2) {
                 this.article2.onExit(this.article2.currentEntity)
                 engine.addEntity(this.prompt1)
                 engine.addEntity(this.prompt2)
@@ -260,32 +261,32 @@ class ExteriorInstance extends Scene {
                 engine.removeEntity(this.prevbuttonLeft)
 
             }
-        },{
+        }, {
             hoverText: 'Close Article'
         }))
 
 
-        this.prevbuttonLeft.addComponentOrReplace(new 
+        this.prevbuttonLeft.addComponentOrReplace(new
             Transform({
                 position: new Vector3(24.000, -2.030, 24.340),
                 scale: new Vector3(3.000, 3.000, 3.000),
                 rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-             })
-)
+            })
+        )
 
-         this.prevbuttonLeft.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==1){
+        this.prevbuttonLeft.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 1) {
                 this.article1.prevPage()
             }
-            if(this.articlenum==2){
-                this.article2.prevPage() 
+            if (this.articlenum == 2) {
+                this.article2.prevPage()
             }
-        },{
+        }, {
             hoverText: 'Previous Page'
         }))
     }
 
-    articleFeed3(){
+    articleFeed3() {
         engine.removeEntity(this.prompt3)
         engine.removeEntity(this.prompt4)
         engine.addEntity(this.article3)
@@ -295,7 +296,7 @@ class ExteriorInstance extends Scene {
         this.createButtonsRight()
     }
 
-    articleFeed4(){
+    articleFeed4() {
         engine.removeEntity(this.prompt3)
         engine.removeEntity(this.prompt4)
         engine.addEntity(this.article4)
@@ -306,26 +307,26 @@ class ExteriorInstance extends Scene {
     }
 
 
-    createButtonsRight(){
+    createButtonsRight() {
         engine.addEntity(this.nextbuttonRight)
         engine.addEntity(this.stopbuttonRight)
         engine.addEntity(this.prevbuttonRight)
 
 
-        this.nextbuttonRight.addComponentOrReplace(new  Transform({
+        this.nextbuttonRight.addComponentOrReplace(new Transform({
             position: new Vector3(24.070, -2.030, 19.37),
             scale: new Vector3(3.000, 3.000, 3.000),
             rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-         }))
-        this.nextbuttonRight.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==3){
+        }))
+        this.nextbuttonRight.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 3) {
                 log('clicked!')
                 this.article3.nextPage()
             }
-            if(this.articlenum==4){
+            if (this.articlenum == 4) {
                 this.article4.nextPage()
             }
-        },{
+        }, {
             hoverText: 'Next Page'
         }))
 
@@ -333,9 +334,9 @@ class ExteriorInstance extends Scene {
             position: new Vector3(24.000, -2.610, 19.93),
             scale: new Vector3(3.000, 3.000, 3.000),
             rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-         }))
-        this.stopbuttonRight.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==3){
+        }))
+        this.stopbuttonRight.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 3) {
                 this.article3.onExit(this.article3.currentEntity)
                 engine.addEntity(this.prompt3)
                 engine.addEntity(this.prompt4)
@@ -344,7 +345,7 @@ class ExteriorInstance extends Scene {
                 engine.removeEntity(this.stopbuttonRight)
                 engine.removeEntity(this.prevbuttonRight)
             }
-            if(this.articlenum==4){
+            if (this.articlenum == 4) {
                 this.article4.onExit(this.article2.currentEntity)
                 engine.addEntity(this.prompt3)
                 engine.addEntity(this.prompt4)
@@ -354,7 +355,7 @@ class ExteriorInstance extends Scene {
                 engine.removeEntity(this.prevbuttonRight)
 
             }
-        },{
+        }, {
             hoverText: 'Close Article'
         }))
 
@@ -363,29 +364,56 @@ class ExteriorInstance extends Scene {
             position: new Vector3(24.000, -2.030, 21.14),
             scale: new Vector3(3.000, 3.000, 3.000),
             rotation: new Quaternion().setEuler(360.000, 270.000, 360.000),
-         }))
-         this.prevbuttonRight.addComponentOrReplace(new OnPointerDown(()=>{
-            if(this.articlenum==3){
+        }))
+        this.prevbuttonRight.addComponentOrReplace(new OnPointerDown(() => {
+            if (this.articlenum == 3) {
                 this.article3.prevPage()
             }
-            if(this.articlenum==4){
-                this.article4.prevPage() 
+            if (this.articlenum == 4) {
+                this.article4.prevPage()
             }
-        },{
+        }, {
             hoverText: 'Previous Page'
         }))
 
 
     }
+    triggerPromptInstruction() {
+        [this.instructionPrompt,
+        ].forEach(instruction => {
+            instruction.setParent(this)
+            instruction.addComponent(Dash_Material.transparent())
+            instruction.getComponent(BoxShape).withCollisions = false
+            // instruction.removeComponent(BoxShape)
+        })
 
-    clickPrompt1() {
-        //enter the code of prompt1 trigger actions
-        
+
+        this.instructionPrompt.addComponentOrReplace(new Transform({
+            position: new Vector3(23.000, 0.000, 20.200),
+            scale: new Vector3(2.800, 4.000, 6.000),
+            rotation: new Quaternion().setEuler(1.000, 180.000, 1.000),
+         }))
+        this.instructionPrompt.onCameraEnter = () => this.enterInstructionTrigger(
+        )
+        this.instructionPrompt.onCameraExit = () => this.exitInstructionTrigger()
+        Dash_Tweaker(this.instructionPrompt)
     }
-    clickPrompt2() {
-        //enter the code of prompt2 trigger actions
+    
+    enterInstructionTrigger(){
+        if(x==0){
+        createUiInstructionPrompt.show()
+        x=x+1
+
+    }else{
+        createUiInstructionPrompt.hide()
     }
 
+    }
+    exitInstructionTrigger(){
+        createUiInstructionPrompt.hide()
+    }
 }
+
+
 
 export const Exterior = new ExteriorInstance()
