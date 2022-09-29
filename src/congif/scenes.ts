@@ -1,3 +1,4 @@
+import { Auditorium } from "src/enviroment/auditorium"
 import { Exterior } from "src/enviroment/exterior"
 import { Scene } from "./core/scene"
 import { SceneLocations } from "./enums"
@@ -5,6 +6,7 @@ import { SceneLocations } from "./enums"
 
 export const SceneEntities: {[key: number] : Scene } = {
     [SceneLocations.Exterior]: Exterior,
+    [SceneLocations.Auditorium]: Auditorium,
 }
 
 export const getSceneEntityFromLocation = (location: SceneLocations) : (Scene | undefined) => {
