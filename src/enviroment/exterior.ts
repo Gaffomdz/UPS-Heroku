@@ -22,7 +22,7 @@ import { dynamicArticle2floor2 } from "src/articles/Floor2/dynamicArticle2F2"
 import { dynamicArticle3floor2 } from "src/articles/Floor2/dynamicArticle3"
 import { SceneController } from "src/congif/core/sceneController"
 
-import {article1page1} from "src/articles/articleResources2/article1"
+import { article1page1 } from "src/articles/articleResources2/article1"
 import { article5cover, article6cover, article7cover } from "src/articles/articleResources2/covers"
 import { article1cover, article2cover, article3cover, article4cover } from "src/articles/articleResources/covers"
 
@@ -37,7 +37,8 @@ class ExteriorInstance extends Scene {
     private newStandGeo = new Entity()
     private newStandPosters = new Entity()
     private upsScreens = new Entity()
-    private elevatorPad = new Entity()
+    private elevator = new Entity()
+    private elevatorPanel = new Entity()
     private hologram = new Entity()
     private instructionPrompt = new TriggerDoor()
     //first floor articles
@@ -80,8 +81,10 @@ class ExteriorInstance extends Scene {
     //utils
     private teleportBox = new teleportBox()
     private teleportBox2 = new teleportBox()
-    private teleportCollider = new Entity()
-    private testTeleport = new ExitPlane()
+    private teleportBox3 = new teleportBox()
+    private teleportBox4 = new teleportBox()
+    private buttonElevatorSecond = new TriggerPrompts()
+    private buttonElevatorFirst = new TriggerPrompts()
 
 
     constructor() {
@@ -92,9 +95,16 @@ class ExteriorInstance extends Scene {
             scale: new Vector3(1, 1, 1),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
-        this.mainGeo.addComponent(new GLTFShape('models/NewsStand/UPS_MainGeo_Flat2ndfloorpanels.glb'))
+        this.mainGeo.addComponent(new GLTFShape('models/new models/UPS_MainGeo.glb'))
         // this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
-        this.elevatorPad.addComponent(new GLTFShape('models/new models/UPS_Elevator_with_Panel.glb')) // We are not using the elevetor yet
+        this.elevator.addComponent(new GLTFShape('models/new models/UPS_Elevator.glb'))
+        this.elevatorPanel.addComponent(new GLTFShape('models/new models/UPS_Elevator_panel_nocolliders.glb'))
+        this.elevator.addComponent(new Animator)
+        this.elevator.getComponent(Animator).addClip(new AnimationState('ElevatorSatatic', { layer: 0, weight: 0.02 }))
+        this.elevator.getComponent(Animator).addClip(new AnimationState('ElevatorLift', { layer: 1, weight: 0.01 }))
+        this.elevator.getComponent(Animator).getClip('ElevatorStatic').pause()
+
+
         this.frontDoor.addComponent(new GLTFShape('models/UPS_FrontDoor.glb'))
         this.frontDoor.addComponent(new Animator)
         this.frontDoor.getComponent(Animator).addClip(new AnimationState('GlassDoor_Open', { layer: 0, weight: 0.01 }))
@@ -106,7 +116,8 @@ class ExteriorInstance extends Scene {
         this.standPanels.addComponent(new GLTFShape('models/NewsStand/UPS_2ndFloorPanels.glb'))
 
         this.mainGeo.setParent(this)
-        this.elevatorPad.setParent(this) // We are not using the elevetor yet
+        this.elevator.setParent(this)
+        this.elevatorPanel.setParent(this)
         this.bottomFloorVS.setParent(this)
         this.frontDoor.setParent(this)
         this.newStandGeo.setParent(this)
@@ -119,7 +130,7 @@ class ExteriorInstance extends Scene {
             position: new Vector3(57.189, 0.000, 43.000),
             scale: new Vector3(0.900, 1.000, 1.000),
             rotation: new Quaternion().setEuler(360.000, 180.000, 360.000),
-         }))
+        }))
         this.standPanels.setParent(this)
 
         // this.article5.setParent(this)
@@ -144,9 +155,7 @@ class ExteriorInstance extends Scene {
         // this.articleFeed()
         this.triggerPromptInstruction()
         this.rotate()
-        this.createTestTeleport()
-
-
+        this.createElevatorsButtons()
     }
     createTriggerPrompts() {
         [this.prompt1, this.prompt2, this.prompt3, this.prompt4
@@ -187,7 +196,7 @@ class ExteriorInstance extends Scene {
         this.prompt3.addComponent(article3cover)
         this.prompt4.addComponent(article4cover)
 
-        Dash_Tweaker(this.prompt1)
+
 
     }
     createTriggerPromptsFloor2() {
@@ -201,11 +210,11 @@ class ExteriorInstance extends Scene {
         this.prompt6.addComponent(article6cover)
         this.prompt7.addComponent(article7cover)
 
-        this.prompt5.addComponentOrReplace(new  Transform({
+        this.prompt5.addComponentOrReplace(new Transform({
             position: new Vector3(30.053, 21.140, 25.500),
             scale: new Vector3(2.991, 3.990, 1.900),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
-         }))
+        }))
         this.prompt5.onClick = () => this.articleFeed5()
 
 
@@ -213,17 +222,17 @@ class ExteriorInstance extends Scene {
             position: new Vector3(30.053, 21.140, 21.500),
             scale: new Vector3(2.991, 3.990, 1.900),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
-         }))
+        }))
         this.prompt6.onClick = () => this.articleFeed6()
 
-        this.prompt7.addComponentOrReplace(new  Transform({
+        this.prompt7.addComponentOrReplace(new Transform({
             position: new Vector3(30.053, 21.140, 17.500),
             scale: new Vector3(2.991, 3.990, 1.900),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
-         }))
+        }))
         this.prompt7.onClick = () => this.articleFeed7()
 
-        
+
 
     }
 
@@ -260,19 +269,9 @@ class ExteriorInstance extends Scene {
     }
 
     teleportBuild() {
-        this.teleportBox.addComponentOrReplace(new Transform({
-            position: new Vector3(4.38, 8.90, 1.84),
-            scale: new Vector3(1, 1, 1)
-        }))
-
-        this.teleportBox.onCameraEnter = () => {
-            movePlayerToVector3(new Vector3(9.98, 20.98, 11.98), new Vector3(10.94, 20.98, 22.35))
-        }
-        engine.addEntity(this.teleportBox)
-
 
         this.teleportBox2.addComponentOrReplace(new Transform({
-            position: new Vector3(7.290, 21.980, 22.020),
+            position: new Vector3(6.290, 21.080, 18.470),
             scale: new Vector3(2.000, 2.000, 2.000),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
@@ -283,9 +282,22 @@ class ExteriorInstance extends Scene {
         this.teleportBox2.onCameraEnter = () => {
             movePlayerToVector3(new Vector3(11.06, 1.08, 14.14), new Vector3(15.14, 1.08, 20.26))
         }
+        this.teleportBox3.addComponentOrReplace(new Transform({
+            position: new Vector3(6.290, 21.080, 14.770),
+            scale: new Vector3(2.000, 2.000, 2.000),
+            rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
+        }))
+        this.teleportBox3.setParent(this)
+
+        this.teleportBox3.getComponent(TriggerComponent).shape = new utils.TriggerBoxShape(new Vector3(2.000, 2.000, 2.000))
+
+        this.teleportBox3.onCameraEnter = () => {
+            SceneController.loadScene(SceneLocations.Auditorium)
+            movePlayerToVector3(new Vector3(11.06, 1.08, 14.14), new Vector3(15.14, 1.08, 20.26))
+        }
 
         this.teleportBox2.removeComponent(BoxShape)
-        this.teleportBox.removeComponent(BoxShape)
+        this.teleportBox3.removeComponent(BoxShape)
 
     }
 
@@ -496,7 +508,7 @@ class ExteriorInstance extends Scene {
             position: new Vector3(30.450, 21.140, 25.480),
             scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-         }))
+        }))
         this.articlenum = 1
         this.pagenum = 1
         this.article5.load()
@@ -558,15 +570,15 @@ class ExteriorInstance extends Scene {
             hoverText: 'Previous Page'
         })),
 
-        [
-            this.nextbuttonA1F2,
-            this.stopbuttonA1F2,
-            this.prevbuttonA1F2
-        ].forEach(button => {
-            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
-            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
-    })
-}
+            [
+                this.nextbuttonA1F2,
+                this.stopbuttonA1F2,
+                this.prevbuttonA1F2
+            ].forEach(button => {
+                button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+                button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+            })
+    }
 
 
 
@@ -579,7 +591,7 @@ class ExteriorInstance extends Scene {
             position: new Vector3(30.450, 21.140, 21.480),
             scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-         }))
+        }))
 
         this.articlenum = 1
         this.pagenum = 1
@@ -641,14 +653,14 @@ class ExteriorInstance extends Scene {
             hoverText: 'Previous Page'
         })),
 
-        [
-            this.nextbuttonA2F2,
-            this.stopbuttonA2F2,
-            this.prevbuttonA2F2
-        ].forEach(button => {
-            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
-            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
-    })
+            [
+                this.nextbuttonA2F2,
+                this.stopbuttonA2F2,
+                this.prevbuttonA2F2
+            ].forEach(button => {
+                button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+                button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+            })
 
 
 
@@ -663,7 +675,7 @@ class ExteriorInstance extends Scene {
             position: new Vector3(30.450, 21.140, 17.480),
             scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-         }))
+        }))
 
 
         this.articlenum = 1
@@ -723,14 +735,14 @@ class ExteriorInstance extends Scene {
             hoverText: 'Previous Page'
         })),
 
-        [
-            this.nextbuttonA3F2,
-            this.stopbuttonA3F2,
-            this.prevbuttonA3F2
-        ].forEach(button => {
-            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
-            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
-    })
+            [
+                this.nextbuttonA3F2,
+                this.stopbuttonA3F2,
+                this.prevbuttonA3F2
+            ].forEach(button => {
+                button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+                button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+            })
 
 
 
@@ -857,27 +869,64 @@ class ExteriorInstance extends Scene {
         // engine.removeEntity(this.article5.page8)
 
 
-        
-    }
-    createTestTeleport() {
-        [this.testTeleport,].forEach(teleports => {
-            // teleports.addComponent(Dash_Material.transparent())
-            teleports.setParent(this)
-        })
-        this.testTeleport.addComponentOrReplace(new Transform({
-            position: new Vector3(7.260, 1.080, 7.920),
-            scale: new Vector3(4.000, 4.000, 5.000),
-            rotation: new Quaternion().setEuler(1.000, 100.000, 2.000),
-         }))
-        this.testTeleport.onCameraEnter = () => this.secondFloor(
-            new Vector3(15.26, 22, 8.09),
-            new Vector3(10.99, 20.98, 11.86),
-        )
 
     }
-    secondFloor(position: Vector3, direction: Vector3) {
-        SceneController.loadScene(SceneLocations.Auditorium)
-        movePlayerToVector3(position, direction)
+    createElevatorsButtons() {
+        [this.buttonElevatorFirst, this.buttonElevatorSecond].forEach(elevatorButtons => {
+            elevatorButtons.addComponent(Dash_Material.transparent())
+            elevatorButtons.setParent(this)
+        })
+        this.buttonElevatorFirst.addComponentOrReplace(new Transform({
+            position: new Vector3(1.620, 3.180, 28.120),
+            scale: new Vector3(1.200, 0.400, 1.400),
+            rotation: new Quaternion().setEuler(1.000, 85.000, 2.000),
+        }))
+        this.buttonElevatorFirst.onClick = () => this.goUp(1)
+        this.buttonElevatorFirst.setMessage('Second Floor')
+        this.buttonElevatorSecond.addComponentOrReplace(new Transform({
+            position: new Vector3(1.620, 2.580, 28.120),
+            scale: new Vector3(1.200, 0.400, 1.400),
+            rotation: new Quaternion().setEuler(1.000, 85.000, 2.000),
+        }))
+        this.buttonElevatorSecond.onClick = () => this.goUp(2)
+        this.buttonElevatorSecond.setMessage('Third Floor')
+
+    }
+    goUp(number: number) {
+
+
+        this.elevator.getComponent(Animator).getClip('ElevatorLift').playing = !this.elevator.getComponent(Animator).getClip('ElevatorLift').playing
+        if (number == 1) {
+            this.teleportBox.addComponentOrReplace(new Transform({
+                position: new Vector3(4.38, 8.90, 1.84),
+                scale: new Vector3(1, 1, 1)
+            }))
+
+            this.teleportBox.onCameraEnter = () => {
+                movePlayerToVector3(new Vector3(6.88, 20.98, 5.68), new Vector3(10.99, 20.98, 11.86))
+                this.elevator.getComponent(Animator).pause()
+            }
+            engine.removeEntity(this.teleportBox4)
+            engine.addEntity(this.teleportBox)
+            this.teleportBox.removeComponent(BoxShape)
+        }
+        if (number == 2) {
+            this.teleportBox4.addComponentOrReplace(new Transform({
+                position: new Vector3(4.38, 8.90, 1.84),
+                scale: new Vector3(1, 1, 1)
+            }))
+
+            this.teleportBox4.onCameraEnter = () => {
+                SceneController.loadScene(SceneLocations.Auditorium)
+                movePlayerToVector3(new Vector3(9.98, 20.98, 11.98), new Vector3(10.94, 20.98, 22.35))
+                this.elevator.getComponent(Animator).pause()
+            }
+            engine.removeEntity(this.teleportBox)
+            engine.addEntity(this.teleportBox4)
+            this.teleportBox4.removeComponent(BoxShape)
+
+
+        }
     }
 
 }
