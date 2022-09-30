@@ -8,7 +8,6 @@ import { teleportBox } from "src/utils/teleportBox"
 import { TriggerDoor } from "src/utils/triggerDoor"
 import { TriggerPrompts } from "../utils/triggerPrompts"
 import * as utils from '@dcl/ecs-scene-utils'
-import { article1background, article1page1 } from "src/articles/articleResources/article1"
 import { ButtonNext } from "./buttonNext"
 import { ButtonPrev } from "./buttonPrev"
 import { ButtonStop } from "./buttonStop"
@@ -22,6 +21,10 @@ import { ExitPlane } from "src/utils/exitPlane"
 import { dynamicArticle2floor2 } from "src/articles/Floor2/dynamicArticle2F2"
 import { dynamicArticle3floor2 } from "src/articles/Floor2/dynamicArticle3"
 import { SceneController } from "src/congif/core/sceneController"
+
+import {article1page1} from "src/articles/articleResources2/article1"
+import { article5cover, article6cover, article7cover } from "src/articles/articleResources2/covers"
+import { article1cover, article2cover, article3cover, article4cover } from "src/articles/articleResources/covers"
 
 let x = 0
 
@@ -55,7 +58,9 @@ class ExteriorInstance extends Scene {
     private prevbuttonRight = new ButtonPrev()
     public articlenum = 0
     public pagenum = 0
+
     //Second Floor Articles
+    private standPanels = new Entity()
     private prompt5 = new TriggerPrompts()
     private prompt6 = new TriggerPrompts()
     private prompt7 = new TriggerPrompts()
@@ -81,13 +86,13 @@ class ExteriorInstance extends Scene {
 
     constructor() {
         super(SceneLocations.Exterior)
-        this.addComponent(new GLTFShape('models/new models/UPS_Colliders.glb'))
+        this.addComponent(new GLTFShape('models/UPS_Colliders.glb'))
         this.addComponentOrReplace(new Transform({
             position: new Vector3(0, 0, 0),
             scale: new Vector3(1, 1, 1),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
-        this.mainGeo.addComponent(new GLTFShape('models/new models/UPS_MainGeo.glb'))
+        this.mainGeo.addComponent(new GLTFShape('models/NewsStand/UPS_MainGeo_Flat2ndfloorpanels.glb'))
         // this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
         this.elevatorPad.addComponent(new GLTFShape('models/new models/UPS_Elevator_with_Panel.glb')) // We are not using the elevetor yet
         this.frontDoor.addComponent(new GLTFShape('models/UPS_FrontDoor.glb'))
@@ -98,6 +103,7 @@ class ExteriorInstance extends Scene {
         this.newStandGeo.addComponent(new GLTFShape('models/UPS_Newstand_geo1.glb'))
         this.hologram.addComponent(new GLTFShape('models/new models/UPS_Hologram.glb'))
         this.upsScreens.addComponent(new GLTFShape('models/new models/UPS_Screens.glb'))
+        this.standPanels.addComponent(new GLTFShape('models/NewsStand/UPS_2ndFloorPanels.glb'))
 
         this.mainGeo.setParent(this)
         this.elevatorPad.setParent(this) // We are not using the elevetor yet
@@ -107,7 +113,14 @@ class ExteriorInstance extends Scene {
         this.hologram.setParent(this)
         this.upsScreens.setParent(this)
 
-        this.newStandPosters.setParent(this)
+        // this.newStandPosters.setParent(this)
+
+        this.standPanels.addComponent(new Transform({
+            position: new Vector3(57.189, 0.000, 43.000),
+            scale: new Vector3(0.900, 1.000, 1.000),
+            rotation: new Quaternion().setEuler(360.000, 180.000, 360.000),
+         }))
+        this.standPanels.setParent(this)
 
         // this.article5.setParent(this)
         // this.article6.setParent(this)
@@ -138,66 +151,79 @@ class ExteriorInstance extends Scene {
     createTriggerPrompts() {
         [this.prompt1, this.prompt2, this.prompt3, this.prompt4
         ].forEach(triggerPrompts => {
-            triggerPrompts.addComponent(Dash_Material.transparent())
             triggerPrompts.setParent(this)
         })
 
         this.prompt1.addComponentOrReplace(new Transform({
-            position: new Vector3(24.070, 2.600, 22.550),
+            position: new Vector3(24.070, 2.800, 22.550),
             scale: new Vector3(1.180, 2.100, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
+            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
         }))
         this.prompt1.onClick = () => this.articleFeed1()
 
         this.prompt2.addComponentOrReplace(new Transform({
-            position: new Vector3(24.070, 2.600, 21.260),
+            position: new Vector3(24.070, 2.800, 21.260),
             scale: new Vector3(1.200, 2.120, 1.920),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
+            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
         }))
         this.prompt2.onClick = () => this.articleFeed2()
 
         this.prompt3.addComponentOrReplace(new Transform({
-            position: new Vector3(24.070, 2.600, 19.350),
+            position: new Vector3(24.070, 2.800, 19.350),
             scale: new Vector3(1.180, 2.100, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
+            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
         }))
         this.prompt3.onClick = () => this.articleFeed3()
 
         this.prompt4.addComponentOrReplace(new Transform({
-            position: new Vector3(24.070, 2.600, 18.050),
+            position: new Vector3(24.070, 2.800, 18.050),
             scale: new Vector3(1.180, 2.100, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 360.000),
+            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
         }))
         this.prompt4.onClick = () => this.articleFeed4()
+
+        this.prompt1.addComponent(article1cover)
+        this.prompt2.addComponent(article2cover)
+        this.prompt3.addComponent(article3cover)
+        this.prompt4.addComponent(article4cover)
+
+        Dash_Tweaker(this.prompt1)
 
     }
     createTriggerPromptsFloor2() {
         [this.prompt5, this.prompt6, this.prompt7,
         ].forEach(triggerPromptsf2 => {
-            triggerPromptsf2.addComponent(Dash_Material.transparent())
             triggerPromptsf2.setParent(this)
         })
-        this.prompt5.addComponentOrReplace(new Transform({
-            position: new Vector3(28.353, 20.300, 25.550),
-            scale: new Vector3(2.861, 3.670, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
-        }))
+
+
+        this.prompt5.addComponent(article5cover)
+        this.prompt6.addComponent(article6cover)
+        this.prompt7.addComponent(article7cover)
+
+        this.prompt5.addComponentOrReplace(new  Transform({
+            position: new Vector3(30.053, 21.140, 25.500),
+            scale: new Vector3(2.991, 3.990, 1.900),
+            rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
+         }))
         this.prompt5.onClick = () => this.articleFeed5()
 
 
         this.prompt6.addComponentOrReplace(new Transform({
-            position: new Vector3(28.353, 20.300, 21.550),
-            scale: new Vector3(2.861, 3.670, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
-        }))
+            position: new Vector3(30.053, 21.140, 21.500),
+            scale: new Vector3(2.991, 3.990, 1.900),
+            rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
+         }))
         this.prompt6.onClick = () => this.articleFeed6()
 
-        this.prompt7.addComponentOrReplace(new Transform({
-            position: new Vector3(28.353, 20.300, 17.550),
-            scale: new Vector3(2.861, 3.670, 1.900),
-            rotation: new Quaternion().setEuler(1.000, 91.000, 180.000),
-        }))
+        this.prompt7.addComponentOrReplace(new  Transform({
+            position: new Vector3(30.053, 21.140, 17.500),
+            scale: new Vector3(2.991, 3.990, 1.900),
+            rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
+         }))
         this.prompt7.onClick = () => this.articleFeed7()
+
+        
 
     }
 
@@ -467,10 +493,10 @@ class ExteriorInstance extends Scene {
         engine.addEntity(this.article5)
         this.article5.setParent(this)
         this.article5.addComponentOrReplace(new Transform({
-            position: new Vector3(30.650, 21.500, 25.480),
-            scale: new Vector3(2.780, 2.480, 4.100),
+            position: new Vector3(30.450, 21.140, 25.480),
+            scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-        }))
+         }))
         this.articlenum = 1
         this.pagenum = 1
         this.article5.load()
@@ -501,7 +527,6 @@ class ExteriorInstance extends Scene {
             hoverText: 'Next Page'
         }))
 
-
         this.stopbuttonA1F2.addComponentOrReplace(new Transform({
             position: new Vector3(29.470, 15.650, 26.770),
             scale: new Vector3(3.000, 3.000, 3.000),
@@ -531,9 +556,19 @@ class ExteriorInstance extends Scene {
 
         }, {
             hoverText: 'Previous Page'
-        }))
+        })),
 
-    }
+        [
+            this.nextbuttonA1F2,
+            this.stopbuttonA1F2,
+            this.prevbuttonA1F2
+        ].forEach(button => {
+            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+    })
+}
+
+
 
     articleFeed6() {
         log('article 6 removed')
@@ -541,11 +576,10 @@ class ExteriorInstance extends Scene {
         engine.addEntity(this.article6)
         this.article6.setParent(this)
         this.article6.addComponentOrReplace(new Transform({
-            position: new Vector3(30.650, 21.500, 21.490),
-            scale: new Vector3(2.720, 3.210, 4.100),
+            position: new Vector3(30.450, 21.140, 21.480),
+            scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-        }))
-
+         }))
 
         this.articlenum = 1
         this.pagenum = 1
@@ -605,7 +639,16 @@ class ExteriorInstance extends Scene {
 
         }, {
             hoverText: 'Previous Page'
-        }))
+        })),
+
+        [
+            this.nextbuttonA2F2,
+            this.stopbuttonA2F2,
+            this.prevbuttonA2F2
+        ].forEach(button => {
+            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+    })
 
 
 
@@ -617,10 +660,10 @@ class ExteriorInstance extends Scene {
         engine.addEntity(this.article7)
         this.article7.setParent(this)
         this.article7.addComponentOrReplace(new Transform({
-            position: new Vector3(30.650, 21.500, 17.490),
-            scale: new Vector3(2.780, 3.280, 4.100),
+            position: new Vector3(30.450, 21.140, 17.480),
+            scale: new Vector3(2.840, 3.980, 4.100),
             rotation: new Quaternion().setEuler(360.000, 90.000, 360.000),
-        }))
+         }))
 
 
         this.articlenum = 1
@@ -667,8 +710,6 @@ class ExteriorInstance extends Scene {
             hoverText: 'Close Article'
         }))
 
-
-
         this.prevbuttonA3F2.addComponentOrReplace(new Transform({
             position: new Vector3(29.480, 16.220, 19.690),
             scale: new Vector3(3.000, 3.000, 3.000),
@@ -680,7 +721,16 @@ class ExteriorInstance extends Scene {
 
         }, {
             hoverText: 'Previous Page'
-        }))
+        })),
+
+        [
+            this.nextbuttonA3F2,
+            this.stopbuttonA3F2,
+            this.prevbuttonA3F2
+        ].forEach(button => {
+            button.getComponent(Transform).position.x = button.getComponent(Transform).position.x + 0.5
+            button.getComponent(Transform).position.y = button.getComponent(Transform).position.y - 0.3
+    })
 
 
 

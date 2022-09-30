@@ -1,6 +1,6 @@
 import { getEntityWorldPosition } from "@dcl/ecs-scene-utils"
 import { Dash_AnimationQueue, Dash_Ease, Dash_Tweaker } from "dcldash"
-import { article1background, article1page1, article1page2, article1page3, article1page4, article1page5, article1page6, article1page7, article1page8 } from "src/articles/articleResources/article1"
+import { article1background, article1page1, article1page2, article1page3, article1page4, article1page5, article1page6, article1page7 } from "src/articles/articleResources2/article1"
 
 export class dynamicArticle1floor2 extends Entity{
 
@@ -13,7 +13,6 @@ export class dynamicArticle1floor2 extends Entity{
     public page5 = new Entity()
     public page6 = new Entity()
     public page7 = new Entity()
-    public page8 = new Entity()
 
     public currentEntity = new Entity()
 
@@ -46,8 +45,7 @@ export class dynamicArticle1floor2 extends Entity{
             this.page4,
             this.page5,
             this.page6,
-            this.page7,
-            this.page8
+            this.page7
         ].forEach(page => {
             page.addComponentOrReplace(new PlaneShape())
             page.setParent(this)
@@ -73,7 +71,6 @@ export class dynamicArticle1floor2 extends Entity{
         this.page5.addComponentOrReplace(article1page5)
         this.page6.addComponentOrReplace(article1page6)
         this.page7.addComponentOrReplace(article1page7) 
-        this.page8.addComponentOrReplace(article1page8)
     }
 
     load(){
@@ -91,8 +88,8 @@ export class dynamicArticle1floor2 extends Entity{
                 const easeValuey = Scalar.Lerp(0,1, Dash_Ease.easeInOutCirc(progress))
                 const easeValuez = Scalar.Lerp(0,1, Dash_Ease.easeInOutCirc(progress))
 
-                const easeValuex2 = Scalar.Lerp(1, 2.68, Dash_Ease.easeInOutCirc(progress))
-                const easeValuey2 = Scalar.Lerp(1, 3.08, Dash_Ease.easeInOutCirc(progress))
+                const easeValuex2 = Scalar.Lerp(1, 2.84, Dash_Ease.easeInOutCirc(progress))
+                const easeValuey2 = Scalar.Lerp(1, 3.98, Dash_Ease.easeInOutCirc(progress))
                 const easeValuez2 = Scalar.Lerp(1, 4.10, Dash_Ease.easeInOutCirc(progress))
 
                 transform.scale.set(easeValuex, easeValuey, easeValuez)
@@ -115,8 +112,8 @@ export class dynamicArticle1floor2 extends Entity{
         }))
 
         entityOld.addComponentOrReplace(new Transform({
-            position: new Vector3(0, 0, -0.08),
-            scale: new Vector3(0, 0, 0),
+            position: new Vector3(0, 0, -0.11),
+            scale: new Vector3(1, 1, 1),
             rotation: new Quaternion().setEuler(0.000, 0.000, 180.000),
         }))
         
@@ -164,12 +161,12 @@ export class dynamicArticle1floor2 extends Entity{
                     const transform = entity.getComponent(Transform)
                     const transform2 = this.getComponent(Transform)
 
-                    const easeValuey = Scalar.Lerp(2.68, 0, Dash_Ease.easeOutCirc(progress))
-                    const easeValue2 = Scalar.Lerp(2.68, 0, Dash_Ease.easeOutCirc(progress))
+                    const easeValuey = Scalar.Lerp(1, 0, Dash_Ease.easeOutCirc(progress))
+                    const easeValue2 = Scalar.Lerp(1, 0, Dash_Ease.easeOutCirc(progress))
 
 
-                    transform.scale.set(2.68, easeValuey, 4.10)
-                    transform2.scale.set(2.68, easeValue2, 4.10)
+                    transform.scale.set(1, easeValuey, 1)
+                    transform2.scale.set(1, easeValue2, 1)
                 },
                 onComplete: () => {
                     this.pagenum = 1
@@ -214,13 +211,9 @@ export class dynamicArticle1floor2 extends Entity{
             log('pagenum: '+ this.pagenum)
         }else
         if(this.pagenum ==7){
-            this.pageSpawn(this.page7, this.page8)
-            this.pagenum = 8
-            log('pagenum: '+ this.pagenum)
-        }else
-        if(this.pagenum == 8){
-            this.pageSpawn(this.page8, this.page1)
+            this.pageSpawn(this.page7, this.page1)
             this.pagenum = 1
+            log('pagenum: '+ this.pagenum)
         }
         
     }
@@ -231,14 +224,8 @@ export class dynamicArticle1floor2 extends Entity{
         if(this.cooldown==0){
             this.cooldown=1
 
-        if(this.pagenum ==1){
-            this.pageSpawn(this.page1, this.page8)
-            this.pagenum = 8
-            log('pagenum: '+ this.pagenum)
-        }else
-
         if(this.pagenum==8){
-            this.pageSpawn(this.page8, this.page7)
+            this.pageSpawn(this.page1, this.page7)
             this.pagenum = 7
         }else
 

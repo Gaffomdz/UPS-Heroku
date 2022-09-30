@@ -1,6 +1,6 @@
 import { Dash_AnimationQueue, Dash_Ease, Dash_Tweaker } from "dcldash"
 import { article1background, article1page1, article1page2, article1page3, article1page4, article1page5, article1page6, article1page7 } from "src/articles/articleResources/article1"
-import { article2page1, article2page2, article2page3, article2page4, article2page5, article2page6, article2page7, article2page8, article2page9 } from "../articleResources/article2"
+import { article2page1, article2page2, article2page3, article2page4, article2page5, article2page6, article2page7, article2page8, article2page9 } from "src/articles/articleResources2/article2"
 
 export class dynamicArticle2floor2 extends Entity{
 
@@ -26,11 +26,11 @@ export class dynamicArticle2floor2 extends Entity{
 
         this.addComponentOrReplace(new PlaneShape)
         this.addComponentOrReplace(article1background)
-        this.addComponentOrReplace(new Transform({
-            position: new Vector3(24.090, 2.800, 21.910),
-            scale: new Vector3(2.680, 3.080, 4.100),
-            rotation: new Quaternion().setEuler(0.000, 90.000, 180.000),
-         }))
+        // this.addComponentOrReplace(new Transform({
+        //     position: new Vector3(24.090, 2.800, 21.910),
+        //     scale: new Vector3(2.680, 3.080, 4.100),
+        //     rotation: new Quaternion().setEuler(0.000, 90.000, 180.000),
+        //  }))
 
         this.loadPages()
 
@@ -51,9 +51,10 @@ export class dynamicArticle2floor2 extends Entity{
         ].forEach(page => {
             page.addComponentOrReplace(new PlaneShape())
             page.setParent(this)
+            engine.removeEntity(page)
             page.addComponentOrReplace(new Transform({
-                position: new Vector3(0, 0, -0.1),
-                scale: new Vector3(1, 1, 1),
+                position: new Vector3(0, 0, -0.10),
+                scale: new Vector3(0, 0, 0),
                 rotation: new Quaternion().setEuler(0.000, 0.000, 180.000),
             }))
         })
@@ -70,7 +71,6 @@ export class dynamicArticle2floor2 extends Entity{
 
     load(){
         engine.addEntity(this.page1)
-        engine.addEntity(this)
         this.pagenum = 1
         this.currentEntity = this.page1
         Dash_AnimationQueue.add({
@@ -84,9 +84,9 @@ export class dynamicArticle2floor2 extends Entity{
                 const easeValuey = Scalar.Lerp(0, 1, Dash_Ease.easeInOutCirc(progress))
                 const easeValuez = Scalar.Lerp(0, 1, Dash_Ease.easeInOutCirc(progress))
 
-                const easeValuex2 = Scalar.Lerp(0, 2.68, Dash_Ease.easeInOutCirc(progress))
-                const easeValuey2 = Scalar.Lerp(0, 3.08, Dash_Ease.easeInOutCirc(progress))
-                const easeValuez2 = Scalar.Lerp(0, 4.10, Dash_Ease.easeInOutCirc(progress))
+                const easeValuex2 = Scalar.Lerp(1, 2.84, Dash_Ease.easeInOutCirc(progress))
+                const easeValuey2 = Scalar.Lerp(1, 3.98, Dash_Ease.easeInOutCirc(progress))
+                const easeValuez2 = Scalar.Lerp(1, 4.1, Dash_Ease.easeInOutCirc(progress))
 
                 transform.scale.set(easeValuex, easeValuey, easeValuez)
                 transform2.scale.set(easeValuex2, easeValuey2, easeValuez2)
@@ -102,14 +102,14 @@ export class dynamicArticle2floor2 extends Entity{
         this.currentEntity = entityNew
 
         entityNew.addComponentOrReplace(new Transform({
-            position: new Vector3(0, 0, -0.05),
+            position: new Vector3(0, 0, -0.1),
             scale: new Vector3(0, 0, 0),
             rotation: new Quaternion().setEuler(0.000, 0.000, 180.000),
         }))
 
         entityOld.addComponentOrReplace(new Transform({
-            position: new Vector3(0.0, 0, -0.08),
-            scale: new Vector3(0, 0, 0),
+            position: new Vector3(0.0, 0, -0.11),
+            scale: new Vector3(1, 1, 1),
             rotation: new Quaternion().setEuler(0.000, 0.000, 180.000),
         }))
         
@@ -160,12 +160,12 @@ export class dynamicArticle2floor2 extends Entity{
                     const transform = entity.getComponent(Transform)
                     const transform2 = this.getComponent(Transform)
 
-                    const easeValuey = Scalar.Lerp(2.68, 0, Dash_Ease.easeOutCirc(progress))
-                    const easeValue2 = Scalar.Lerp(2.68, 0, Dash_Ease.easeOutCirc(progress))
+                    const easeValuey = Scalar.Lerp(1, 0, Dash_Ease.easeOutCirc(progress))
+                    const easeValue2 = Scalar.Lerp(1, 0, Dash_Ease.easeOutCirc(progress))
 
 
-                    transform.scale.set(2.68, easeValuey, 4.10)
-                    transform2.scale.set(2.68, easeValue2, 4.10)
+                    transform.scale.set(1, easeValuey, 1)
+                    transform2.scale.set(1, easeValue2, 1)
                 },
                 onComplete: () => {
                     engine.removeEntity(entity)
