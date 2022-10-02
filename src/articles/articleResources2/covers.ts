@@ -1,8 +1,8 @@
-const article5coverT = new Texture('images/Articles/Article5/1.png')
+const article5coverT = new Texture('images/Articles/Article5/cover.jpg')
 export const article5cover = new Material()
 article5cover.albedoTexture = article5coverT
 
-const article6coverT = new Texture('images/Articles/Article6/1.png')
+const article6coverT = new Texture('images/Articles/Article6/cover2.jpg')
 export const article6cover = new Material()
 article6cover.albedoTexture = article6coverT
 

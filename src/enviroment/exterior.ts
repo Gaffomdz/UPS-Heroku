@@ -85,7 +85,7 @@ class ExteriorInstance extends Scene {
     private teleportBox4 = new teleportBox()
     private buttonElevatorSecond = new TriggerPrompts()
     private buttonElevatorFirst = new TriggerPrompts()
-
+    private proximityBox = new teleportBox()
 
     constructor() {
         super(SceneLocations.Exterior)
@@ -98,11 +98,18 @@ class ExteriorInstance extends Scene {
         this.mainGeo.addComponent(new GLTFShape('models/new models/UPS_MainGeo.glb'))
         // this.bottomFloorVS.addComponent(new GLTFShape('models/UPS_bottom_floor_videoscreen_2.glb'))
         this.elevator.addComponent(new GLTFShape('models/new models/UPS_Elevator.glb'))
-        this.elevatorPanel.addComponent(new GLTFShape('models/new models/UPS_Elevator_panel_nocolliders.glb'))
         this.elevator.addComponent(new Animator)
         this.elevator.getComponent(Animator).addClip(new AnimationState('ElevatorSatatic', { layer: 0, weight: 0.02 }))
         this.elevator.getComponent(Animator).addClip(new AnimationState('ElevatorLift', { layer: 1, weight: 0.01 }))
         this.elevator.getComponent(Animator).getClip('ElevatorStatic').pause()
+
+        this.elevatorPanel.addComponent(new GLTFShape('models/new models/UPS_Elevator_panelnew.glb'))
+        this.elevatorPanel.addComponent(new Animator)
+        this.elevatorPanel.getComponent(Animator).addClip(new AnimationState('PanelOff', { layer: 0, weight: 0.02 }))
+        this.elevatorPanel.getComponent(Animator).addClip(new AnimationState('PanelFadeIn', { layer: 1, weight: 0.01 }))
+        this.elevatorPanel.getComponent(Animator).addClip(new AnimationState('PanelOn', { layer: 2, weight: 0.01 }))
+        this.elevatorPanel.getComponent(Animator).getClip('PanelOff').pause()
+
 
 
         this.frontDoor.addComponent(new GLTFShape('models/UPS_FrontDoor.glb'))
@@ -123,6 +130,7 @@ class ExteriorInstance extends Scene {
         this.newStandGeo.setParent(this)
         this.hologram.setParent(this)
         this.upsScreens.setParent(this)
+
 
         // this.newStandPosters.setParent(this)
 
@@ -156,6 +164,7 @@ class ExteriorInstance extends Scene {
         this.triggerPromptInstruction()
         this.rotate()
         this.createElevatorsButtons()
+        this.createProximityBox()
     }
     createTriggerPrompts() {
         [this.prompt1, this.prompt2, this.prompt3, this.prompt4
@@ -877,19 +886,20 @@ class ExteriorInstance extends Scene {
             elevatorButtons.setParent(this)
         })
         this.buttonElevatorFirst.addComponentOrReplace(new Transform({
-            position: new Vector3(1.620, 3.180, 28.120),
+            position: new Vector3(1.620, 2.880, 28.120),
             scale: new Vector3(1.200, 0.400, 1.400),
             rotation: new Quaternion().setEuler(1.000, 85.000, 2.000),
         }))
         this.buttonElevatorFirst.onClick = () => this.goUp(1)
-        this.buttonElevatorFirst.setMessage('Second Floor')
+        this.buttonElevatorFirst.setMessage('LEARN THE LATEST BUSINESS TRENDS')
         this.buttonElevatorSecond.addComponentOrReplace(new Transform({
-            position: new Vector3(1.620, 2.580, 28.120),
+            position: new Vector3(1.620, 2.380, 28.120),
             scale: new Vector3(1.200, 0.400, 1.400),
             rotation: new Quaternion().setEuler(1.000, 85.000, 2.000),
         }))
         this.buttonElevatorSecond.onClick = () => this.goUp(2)
-        this.buttonElevatorSecond.setMessage('Third Floor')
+        this.buttonElevatorSecond.setMessage('MEET BUSINESS EXPERTS')
+
 
     }
     goUp(number: number) {
@@ -898,13 +908,15 @@ class ExteriorInstance extends Scene {
         this.elevator.getComponent(Animator).getClip('ElevatorLift').playing = !this.elevator.getComponent(Animator).getClip('ElevatorLift').playing
         if (number == 1) {
             this.teleportBox.addComponentOrReplace(new Transform({
-                position: new Vector3(4.38, 8.90, 1.84),
-                scale: new Vector3(1, 1, 1)
+                position: new Vector3(3.980, 13.400, 2.540),
+                scale: new Vector3(2.000, 1.000, 2.900),
+                rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
             }))
 
             this.teleportBox.onCameraEnter = () => {
                 movePlayerToVector3(new Vector3(6.88, 20.98, 5.68), new Vector3(10.99, 20.98, 11.86))
                 this.elevator.getComponent(Animator).pause()
+                this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
             }
             engine.removeEntity(this.teleportBox4)
             engine.addEntity(this.teleportBox)
@@ -912,14 +924,16 @@ class ExteriorInstance extends Scene {
         }
         if (number == 2) {
             this.teleportBox4.addComponentOrReplace(new Transform({
-                position: new Vector3(4.38, 8.90, 1.84),
-                scale: new Vector3(1, 1, 1)
+                position: new Vector3(3.980, 13.400, 2.540),
+                scale: new Vector3(2.000, 1.000, 2.900),
+                rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
             }))
 
             this.teleportBox4.onCameraEnter = () => {
                 SceneController.loadScene(SceneLocations.Auditorium)
-                movePlayerToVector3(new Vector3(9.98, 20.98, 11.98), new Vector3(10.94, 20.98, 22.35))
+                movePlayerToVector3(new Vector3(28.21, 4.08, 13.21), new Vector3(23.94, 0.98, 13.27))
                 this.elevator.getComponent(Animator).pause()
+                this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
             }
             engine.removeEntity(this.teleportBox)
             engine.addEntity(this.teleportBox4)
@@ -928,6 +942,32 @@ class ExteriorInstance extends Scene {
 
         }
     }
+    createProximityBox() {
+        this.proximityBox.addComponentOrReplace(new Transform({
+            position: new Vector3(3.250, 2.400, 27.970),
+            scale: new Vector3(3.600, 2.400, 2.200),
+            rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
+        }))
+        this.proximityBox.setParent(this)
+
+        this.proximityBox.getComponent(TriggerComponent).shape = new utils.TriggerBoxShape(new Vector3(2.000, 2.000, 2.000))
+
+        this.proximityBox.onCameraEnter = () => {
+            this.elevatorPanel.getComponent(Animator).getClip('PanelOff').stop()
+            this.elevatorPanel.getComponent(Animator).getClip('PanelFadeIn').play()
+            this.elevatorPanel.getComponent(Animator).getClip('PanelFadeIn').looping = false
+
+        }
+        this.proximityBox.onCameraExit = () => {
+            this.elevatorPanel.getComponent(Animator).getClip('PanelFadeIn').stop()
+            this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
+        }
+
+
+        this.proximityBox.removeComponent(BoxShape)
+     
+    }
+
 
 }
 
