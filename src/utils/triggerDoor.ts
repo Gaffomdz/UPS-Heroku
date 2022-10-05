@@ -3,7 +3,7 @@ export class TriggerDoor extends Entity {
   private shape: BoxShape = new BoxShape()
   public onCameraEnter: () => void = () => { }
   public onCameraExit: () => void = () => { }
-  private distance: number = 5
+  private distance: number = 0.5
   private message: string = "Interact"
   private triggerBox = new utils.TriggerBoxShape(new Vector3(6.800, 5.000, 14.000))
 
@@ -36,7 +36,7 @@ export class TriggerDoor extends Entity {
             this.onCameraExit()
           }
 
-        }
+        },
 
 
 

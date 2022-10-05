@@ -40,7 +40,9 @@ class ExteriorInstance extends Scene {
     private elevator = new Entity()
     private elevatorPanel = new Entity()
     private hologram = new Entity()
-    private instructionPrompt = new TriggerDoor()
+    private instructionPrompt = new teleportBox()
+    private secondFloorPanels = new Entity()
+    private secondFloorArticles = new Entity()
     //first floor articles
     private prompt1 = new TriggerPrompts()
     private prompt2 = new TriggerPrompts()
@@ -89,7 +91,7 @@ class ExteriorInstance extends Scene {
 
     constructor() {
         super(SceneLocations.Exterior)
-        this.addComponent(new GLTFShape('models/UPS_Colliders.glb'))
+        this.addComponent(new GLTFShape('models/new models/UPS_Colliders.glb'))
         this.addComponentOrReplace(new Transform({
             position: new Vector3(0, 0, 0),
             scale: new Vector3(1, 1, 1),
@@ -121,6 +123,10 @@ class ExteriorInstance extends Scene {
         this.hologram.addComponent(new GLTFShape('models/new models/UPS_Hologram.glb'))
         this.upsScreens.addComponent(new GLTFShape('models/new models/UPS_Screens.glb'))
         this.standPanels.addComponent(new GLTFShape('models/NewsStand/UPS_2ndFloorPanels.glb'))
+        this.secondFloorPanels.addComponent(new GLTFShape('models/new models/UPS_2ndFL_ContentPanels.glb'))
+        this.secondFloorArticles.addComponent(new GLTFShape('models/new models/UPS_Floor2_Articles.glb'))
+
+
 
         this.mainGeo.setParent(this)
         this.elevator.setParent(this)
@@ -130,6 +136,8 @@ class ExteriorInstance extends Scene {
         this.newStandGeo.setParent(this)
         this.hologram.setParent(this)
         this.upsScreens.setParent(this)
+        this.secondFloorPanels.setParent(this)
+        this.secondFloorArticles.setParent(this)
 
 
         // this.newStandPosters.setParent(this)
@@ -220,8 +228,8 @@ class ExteriorInstance extends Scene {
         this.prompt7.addComponent(article7cover)
 
         this.prompt5.addComponentOrReplace(new Transform({
-            position: new Vector3(30.053, 21.140, 25.500),
-            scale: new Vector3(2.991, 3.990, 1.900),
+            position: new Vector3(30.053, 21.120, 25.520),
+            scale: new Vector3(2.898, 4.030, 1.880),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
         }))
         this.prompt5.onClick = () => this.articleFeed5()
@@ -229,17 +237,18 @@ class ExteriorInstance extends Scene {
 
         this.prompt6.addComponentOrReplace(new Transform({
             position: new Vector3(30.053, 21.140, 21.500),
-            scale: new Vector3(2.991, 3.990, 1.900),
+            scale: new Vector3(2.891, 3.990, 1.900),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
         }))
         this.prompt6.onClick = () => this.articleFeed6()
 
         this.prompt7.addComponentOrReplace(new Transform({
             position: new Vector3(30.053, 21.140, 17.500),
-            scale: new Vector3(2.991, 3.990, 1.900),
+            scale: new Vector3(2.791, 4.090, 1.900),
             rotation: new Quaternion().setEuler(360.000, 90.000, 180.000),
         }))
         this.prompt7.onClick = () => this.articleFeed7()
+
 
 
 
@@ -280,8 +289,8 @@ class ExteriorInstance extends Scene {
     teleportBuild() {
 
         this.teleportBox2.addComponentOrReplace(new Transform({
-            position: new Vector3(6.290, 21.080, 18.470),
-            scale: new Vector3(2.000, 2.000, 2.000),
+            position: new Vector3(5.090, 21.880, 18.370),
+            scale: new Vector3(-0.300, 3.400, 2.000),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
         this.teleportBox2.setParent(this)
@@ -292,8 +301,8 @@ class ExteriorInstance extends Scene {
             movePlayerToVector3(new Vector3(11.06, 1.08, 14.14), new Vector3(15.14, 1.08, 20.26))
         }
         this.teleportBox3.addComponentOrReplace(new Transform({
-            position: new Vector3(6.290, 21.080, 14.770),
-            scale: new Vector3(2.000, 2.000, 2.000),
+            position: new Vector3(5.090, 21.580, 14.170),
+            scale: new Vector3(0.200, 3.000, 2.000),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
         this.teleportBox3.setParent(this)
@@ -307,6 +316,7 @@ class ExteriorInstance extends Scene {
 
         this.teleportBox2.removeComponent(BoxShape)
         this.teleportBox3.removeComponent(BoxShape)
+        Dash_Tweaker(this.teleportBox3)
 
     }
 
@@ -761,26 +771,28 @@ class ExteriorInstance extends Scene {
         [this.instructionPrompt,
         ].forEach(instruction => {
             instruction.setParent(this)
-            instruction.addComponent(Dash_Material.transparent())
+            // instruction.addComponent(Dash_Material.transparent())
             instruction.getComponent(BoxShape).withCollisions = false
-            // instruction.removeComponent(BoxShape)
+            instruction.removeComponent(BoxShape)
         })
 
 
         this.instructionPrompt.addComponentOrReplace(new Transform({
-            position: new Vector3(23.000, 0.000, 20.200),
-            scale: new Vector3(2.800, 4.000, 6.000),
+            position: new Vector3(23.000, 1.000, 20.200),
+            scale: new Vector3(-1.200, 1.000, 7.000),
             rotation: new Quaternion().setEuler(1.000, 180.000, 1.000),
         }))
         this.instructionPrompt.onCameraEnter = () => this.enterInstructionTrigger(
         )
         this.instructionPrompt.onCameraExit = () => this.exitInstructionTrigger()
+
     }
 
     enterInstructionTrigger() {
         if (x == 0) {
             createUiInstructionPrompt.show()
             x = x + 1
+            log('entro')
 
         } else {
             createUiInstructionPrompt.hide()
@@ -965,7 +977,7 @@ class ExteriorInstance extends Scene {
 
 
         this.proximityBox.removeComponent(BoxShape)
-     
+
     }
 
 

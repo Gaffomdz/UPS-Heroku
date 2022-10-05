@@ -14,6 +14,7 @@ export class AuditoriumInstance extends Scene {
 
     //geo
     private auditoriumGeo = new Entity()
+    private auditoriumConsole = new Entity()
     //screen
     private screen1 = new Videos()
     private screen2 = new Videos()
@@ -27,15 +28,17 @@ export class AuditoriumInstance extends Scene {
 
     constructor() {
         super(SceneLocations.Auditorium)
-        this.addComponent(new GLTFShape('models/new models/UPS_auditorium_Colliders.glb'))
+        this.addComponent(new GLTFShape('models/new models/UPS_Auditorium_Collider.glb'))
         this.auditoriumGeo.addComponent(new GLTFShape('models/new models/UPS_auditorium_geo.glb'))
         this.screen1.myVideoClip = (new VideoClip('https://player.vimeo.com/external/754766612.m3u8?s=6d7b0c1bae5cc2964a7be4ba9d824b9b1916422c'))
         this.screen2.myVideoClip = (new VideoClip('https://player.vimeo.com/external/754766418.m3u8?s=5786122a2c94e1638e56602b5e0103ddb86aa5c8'))
         this.screen3.myVideoClip = (new VideoClip('https://player.vimeo.com/external/754766219.m3u8?s=61339c6fbf53af2dafdf89908fc2bb4ad8991c93'))
+        this.auditoriumConsole.addComponent(new GLTFShape('models/new models/UPS_Auditorium_Console.glb'))
 
 
 
         this.auditoriumGeo.setParent(this)
+        this.auditoriumConsole.setParent(this)
         this.createPortal()
         this.createMovieScreen()
         // this.createmoviebutton()
