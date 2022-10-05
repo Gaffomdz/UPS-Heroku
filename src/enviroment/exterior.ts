@@ -915,10 +915,11 @@ class ExteriorInstance extends Scene {
 
     }
     goUp(number: number) {
-
-
-        this.elevator.getComponent(Animator).getClip('ElevatorLift').playing = !this.elevator.getComponent(Animator).getClip('ElevatorLift').playing
+        log('elevator on')
+        this.elevator.getComponent(Animator).getClip('ElevatorLift').play()
+        // this.elevator.getComponent(Animator).getClip('ElevatorLift').playing = !this.elevator.getComponent(Animator).getClip('ElevatorLift').playing
         if (number == 1) {
+            log('going up')
             this.teleportBox.addComponentOrReplace(new Transform({
                 position: new Vector3(3.980, 13.400, 2.540),
                 scale: new Vector3(2.000, 1.000, 2.900),
@@ -927,7 +928,7 @@ class ExteriorInstance extends Scene {
 
             this.teleportBox.onCameraEnter = () => {
                 movePlayerToVector3(new Vector3(6.88, 20.98, 5.68), new Vector3(10.99, 20.98, 11.86))
-                this.elevator.getComponent(Animator).pause()
+                this.elevator.getComponent(Animator).getClip('ElevatorLift').stop()
                 this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
             }
             engine.removeEntity(this.teleportBox4)
@@ -935,6 +936,7 @@ class ExteriorInstance extends Scene {
             this.teleportBox.removeComponent(BoxShape)
         }
         if (number == 2) {
+            log('going up')
             this.teleportBox4.addComponentOrReplace(new Transform({
                 position: new Vector3(3.980, 13.400, 2.540),
                 scale: new Vector3(2.000, 1.000, 2.900),
@@ -944,7 +946,7 @@ class ExteriorInstance extends Scene {
             this.teleportBox4.onCameraEnter = () => {
                 SceneController.loadScene(SceneLocations.Auditorium)
                 movePlayerToVector3(new Vector3(28.21, 4.08, 13.21), new Vector3(23.94, 0.98, 13.27))
-                this.elevator.getComponent(Animator).pause()
+                this.elevator.getComponent(Animator).getClip('ElevatorLift').stop()
                 this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
             }
             engine.removeEntity(this.teleportBox)
