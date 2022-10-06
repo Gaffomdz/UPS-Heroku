@@ -289,8 +289,8 @@ class ExteriorInstance extends Scene {
     teleportBuild() {
 
         this.teleportBox2.addComponentOrReplace(new Transform({
-            position: new Vector3(5.090, 21.880, 18.370),
-            scale: new Vector3(-0.300, 3.400, 2.000),
+            position: new Vector3(6.090, 21.270, 18.270),
+            scale: new Vector3(1.700, 2.400, 1.800),
             rotation: new Quaternion().setEuler(0.000, 0.000, 0.000),
         }))
         this.teleportBox2.setParent(this)
@@ -316,7 +316,6 @@ class ExteriorInstance extends Scene {
 
         this.teleportBox2.removeComponent(BoxShape)
         this.teleportBox3.removeComponent(BoxShape)
-        Dash_Tweaker(this.teleportBox3)
 
     }
 
@@ -945,7 +944,7 @@ class ExteriorInstance extends Scene {
 
             this.teleportBox4.onCameraEnter = () => {
                 SceneController.loadScene(SceneLocations.Auditorium)
-                movePlayerToVector3(new Vector3(28.21, 4.08, 13.21), new Vector3(23.94, 0.98, 13.27))
+                movePlayerToVector3(new Vector3(28.21, 33.08, 13.21), new Vector3(23.94, 34.98, 13.27))
                 this.elevator.getComponent(Animator).getClip('ElevatorLift').stop()
                 this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
             }
@@ -953,7 +952,7 @@ class ExteriorInstance extends Scene {
             engine.addEntity(this.teleportBox4)
             this.teleportBox4.removeComponent(BoxShape)
 
-
+            
         }
     }
     createProximityBox() {
