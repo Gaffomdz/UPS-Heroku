@@ -311,7 +311,7 @@ class ExteriorInstance extends Scene {
 
         this.teleportBox3.onCameraEnter = () => {
             SceneController.loadScene(SceneLocations.Auditorium)
-            movePlayerToVector3(new Vector3(11.06, 1.08, 14.14), new Vector3(15.14, 1.08, 20.26))
+            movePlayerToVector3(new Vector3(28.21, 33.08, 13.21), new Vector3(23.94, 34.98, 13.27))
         }
 
         this.teleportBox2.removeComponent(BoxShape)
