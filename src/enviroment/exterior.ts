@@ -21,7 +21,7 @@ import { ExitPlane } from "src/utils/exitPlane"
 import { dynamicArticle2floor2 } from "src/articles/Floor2/dynamicArticle2F2"
 import { dynamicArticle3floor2 } from "src/articles/Floor2/dynamicArticle3"
 import { SceneController } from "src/congif/core/sceneController"
-
+import { Auditorium } from "./auditorium"
 import { article1page1 } from "src/articles/articleResources2/article1"
 import { article5cover, article6cover, article7cover } from "src/articles/articleResources2/covers"
 import { article1cover, article2cover, article3cover, article4cover } from "src/articles/articleResources/covers"
@@ -312,6 +312,10 @@ class ExteriorInstance extends Scene {
         this.teleportBox3.onCameraEnter = () => {
             SceneController.loadScene(SceneLocations.Auditorium)
             movePlayerToVector3(new Vector3(28.21, 33.08, 13.21), new Vector3(23.94, 34.98, 13.27))
+            Auditorium.screen1.myMaterial.albedoTexture = Auditorium.screen1.myVideoTexture1
+            Auditorium.screen1.myVideoTexture1.reset()
+            Auditorium.screen1.myVideoTexture1.play()
+            Auditorium.currentvid = 1
         }
 
         this.teleportBox2.removeComponent(BoxShape)
@@ -947,6 +951,10 @@ class ExteriorInstance extends Scene {
                 movePlayerToVector3(new Vector3(28.21, 33.08, 13.21), new Vector3(23.94, 34.98, 13.27))
                 this.elevator.getComponent(Animator).getClip('ElevatorLift').stop()
                 this.elevatorPanel.getComponent(Animator).getClip('PanelOff').play()
+                Auditorium.screen1.myMaterial.albedoTexture = Auditorium.screen1.myVideoTexture1
+                Auditorium.screen1.myVideoTexture1.reset()
+                Auditorium.screen1.myVideoTexture1.play()
+                Auditorium.currentvid = 1
             }
             engine.removeEntity(this.teleportBox)
             engine.addEntity(this.teleportBox4)
@@ -955,6 +963,7 @@ class ExteriorInstance extends Scene {
             
         }
     }
+    
     createProximityBox() {
         this.proximityBox.addComponentOrReplace(new Transform({
             position: new Vector3(3.250, 2.400, 27.970),
